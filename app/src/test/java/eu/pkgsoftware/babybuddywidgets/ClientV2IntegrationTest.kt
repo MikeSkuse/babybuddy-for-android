@@ -70,6 +70,10 @@ class ClientV2IntegrationTest {
         override fun getAuthCookies(): Map<String, String> {
             return mapOf()
         }
+
+        override fun getCfAccessClientId(): String = ""
+
+        override fun getCfAccessClientSecret(): String = ""
     }
 
     suspend fun runObtainListsTest() {

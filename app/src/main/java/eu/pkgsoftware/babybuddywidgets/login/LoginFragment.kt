@@ -35,6 +35,8 @@ class LoginFragment : BaseFragment() {
     private lateinit var binding: LoginFragmentBinding
     private lateinit var loginButton: Button
     private lateinit var addressEdit: EditText
+    private lateinit var cfAccessClientIdEdit: EditText
+    private lateinit var cfAccessClientSecretEdit: EditText
     private lateinit var loginNameEdit: EditText
     private lateinit var loginPasswordEdit: EditText
 
@@ -59,6 +61,8 @@ class LoginFragment : BaseFragment() {
         val view: View = binding.root
         loginButton = view.findViewById(R.id.loginButton)
         addressEdit = view.findViewById(R.id.serverAddressEdit)
+        cfAccessClientIdEdit = view.findViewById(R.id.cfAccessClientIdEdit)
+        cfAccessClientSecretEdit = view.findViewById(R.id.cfAccessClientSecretEdit)
         loginNameEdit = view.findViewById(R.id.loginNameEdit)
         loginPasswordEdit = view.findViewById(R.id.passwordEdit)
         val tw: TextWatcher = object : TextWatcher {
@@ -77,6 +81,8 @@ class LoginFragment : BaseFragment() {
         }
         addressEdit.setText(serverUrl)
         addressEdit.addTextChangedListener(tw)
+        cfAccessClientIdEdit.setText(credStore.cfAccessClientId)
+        cfAccessClientSecretEdit.setText(credStore.cfAccessClientSecret)
         loginNameEdit.addTextChangedListener(tw)
         loginPasswordEdit.addTextChangedListener(tw)
         loginButton.setOnClickListener(View.OnClickListener { view1: View? -> uiStartLogin() })
@@ -215,9 +221,17 @@ class LoginFragment : BaseFragment() {
             cancelParallelLogin.cancelParallel {
                 val credStore = mainActivity.credStore
                 credStore.storeServerUrl(addressEdit.text.toString())
+                credStore.storeCfAccessClientId(cfAccessClientIdEdit.text.toString())
+                credStore.storeCfAccessClientSecret(cfAccessClientSecretEdit.text.toString())
                 var token: String? = null
                 token = try {
-                    grabToken(AsyncGrabAppToken(URL(addressEdit.text.toString())))
+                    grabToken(
+                        AsyncGrabAppToken(
+                            URL(addressEdit.text.toString()),
+                            cfAccessClientId = cfAccessClientIdEdit.text.toString(),
+                            cfAccessClientSecret = cfAccessClientSecretEdit.text.toString(),
+                        )
+                    )
                 } catch (e: IOException) {
                     showError(true, "Login failed", e.message)
                     return@cancelParallel

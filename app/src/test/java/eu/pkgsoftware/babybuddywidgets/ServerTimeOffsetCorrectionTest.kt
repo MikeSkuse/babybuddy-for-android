@@ -14,7 +14,7 @@ class TestableServerTimeOffsetTracker : eu.pkgsoftware.babybuddywidgets.networki
 
 class ServerTimeOffsetCorrectionTest {
     fun headerFromMillis(now: Long): String {
-        return Constants.SERVER_DATE_FORMAT.format(Date(now))
+        return Constants.formatServerDateHeader(Date(now))
     }
 
     @Test

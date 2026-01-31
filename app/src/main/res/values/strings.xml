@@ -80,6 +80,10 @@
     <string name="login_text_hint">Login Name</string>
     <string name="login_password_hint">Login Password</string>
 
+    <string name="login_cf_access_section_title">Cloudflare Access (optional)</string>
+    <string name="login_cf_access_client_id_hint">CF-Access-Client-Id</string>
+    <string name="login_cf_access_client_secret_hint">CF-Access-Client-Secret</string>
+
     <string name="login_http_warning_title">Insecure connection</string>
     <string name="login_http_warning_message">
         This server URL does not start with \'https\'. This means that the password

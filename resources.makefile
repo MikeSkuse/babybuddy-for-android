@@ -78,8 +78,8 @@ licenses: app/src/main/res/values/licenses_strings.xml
 
 app/src/main/res/values/licenses_strings.xml: 3RDPARTY.md $(LINCESES_SOURCE)/requirements.txt $(LINCESES_SOURCE)/process-3rdparty-files.py
 	cd $(LINCESES_SOURCE) \
-	&& python3 -m pipenv install --skip-lock -r requirements.txt \
-	&& python3 -m pipenv run python process-3rdparty-files.py $(abspath $<) $(abspath $@)
+	&& pipenv install --skip-lock -r requirements.txt \
+	&& pipenv run python process-3rdparty-files.py $(abspath $<) $(abspath $@)
 
 info:
 	@echo -e -- Targets refreshed by this command: \\n  $(subst $(SPACE)$(SPACE),\\n$(SPACE)$(SPACE),$(ALL_TARGETS))

@@ -14,8 +14,12 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-class AsyncGrabAppToken(val url: URL) {
-    private val grabAppToken = GrabAppToken(url)
+class AsyncGrabAppToken(
+    val url: URL,
+    val cfAccessClientId: String? = null,
+    val cfAccessClientSecret: String? = null,
+) {
+    private val grabAppToken = GrabAppToken(url, cfAccessClientId, cfAccessClientSecret)
 
     suspend fun login(username: String, password: String) {
         coroutineScope {

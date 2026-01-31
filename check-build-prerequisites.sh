@@ -58,7 +58,11 @@ if [[ ! -f "app/build.gradle" ]]; then
     echo "app/build.gradle file not found"
     exit 1
 fi
-targetSdk=$(grep -oP 'targetSdk\s+\K\d+' app/build.gradle)
+# macOS ships a BSD grep that does not support PCRE (-P). Use a portable parser.
+# Expected format in app/build.gradle: `targetSdk <number>`
+targetSdk=$(
+    sed -nE 's/^[[:space:]]*targetSdk[[:space:]]+([0-9]+).*/\1/p' app/build.gradle | head -n 1
+)
 if [[ -z "$targetSdk" ]]; then
     echo "targetSdkVersion not found in app/build.gradle"
     exit 1

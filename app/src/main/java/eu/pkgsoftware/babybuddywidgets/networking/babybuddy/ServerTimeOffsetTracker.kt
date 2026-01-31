@@ -39,8 +39,7 @@ open class ServerTimeOffsetTracker(initialOffsets: Sequence<Long> = sequenceOf()
 
     fun updateServerTime(dateHeader: String) {
         synchronized(mutex) {
-            val date = Constants.SERVER_DATE_FORMAT.parse(dateHeader)
-            val serverMillis = date?.time ?: return
+            val serverMillis = Constants.parseServerDateHeader(dateHeader)?.time ?: return
 
             // Note: System.currentTimeMillis() includes the connection latency, but including it
             // makes the offset larger, which does not hurt the reason for the offset. If latency is

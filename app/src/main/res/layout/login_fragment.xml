@@ -54,6 +54,40 @@
         app:layout_constraintStart_toStartOf="@id/loginInfoText"
         app:layout_constraintTop_toBottomOf="@+id/loginInfoText" />
 
+    <TextView
+        android:id="@+id/cfAccessTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/login_cf_access_section_title"
+        android:textColor="?android:attr/textColorPrimary"
+        app:layout_constraintStart_toStartOf="@+id/serverAddressEdit"
+        app:layout_constraintTop_toBottomOf="@+id/serverAddressEdit" />
+
+    <EditText
+        android:id="@+id/cfAccessClientIdEdit"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="4dp"
+        android:ems="10"
+        android:hint="@string/login_cf_access_client_id_hint"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        app:layout_constraintStart_toStartOf="@+id/serverAddressEdit"
+        app:layout_constraintTop_toBottomOf="@+id/cfAccessTitle" />
+
+    <EditText
+        android:id="@+id/cfAccessClientSecretEdit"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="4dp"
+        android:ems="10"
+        android:hint="@string/login_cf_access_client_secret_hint"
+        android:importantForAutofill="no"
+        android:inputType="textPassword"
+        app:layout_constraintStart_toStartOf="@+id/serverAddressEdit"
+        app:layout_constraintTop_toBottomOf="@+id/cfAccessClientIdEdit" />
+
     <EditText
         android:id="@+id/loginNameEdit"
         android:layout_width="match_parent"
@@ -64,7 +98,7 @@
         android:hint="@string/login_text_hint"
         android:inputType="textPersonName"
         app:layout_constraintStart_toStartOf="@+id/serverAddressEdit"
-        app:layout_constraintTop_toBottomOf="@+id/serverAddressEdit" />
+        app:layout_constraintTop_toBottomOf="@+id/cfAccessClientSecretEdit" />
 
     <TextView
         android:id="@+id/qrCodeInfoText"

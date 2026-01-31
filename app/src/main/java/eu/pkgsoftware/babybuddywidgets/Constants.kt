@@ -9,12 +9,36 @@ import com.fasterxml.jackson.databind.JsonSerializer
 import com.fasterxml.jackson.databind.SerializerProvider
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 object Constants {
-    @JvmField
-    val SERVER_DATE_FORMAT = SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z", Locale.ENGLISH)
+    /**
+     * HTTP Date header parsing/formatting.
+     *
+     * Important:
+     * - `SimpleDateFormat` is not thread-safe, so we create a new instance per call.
+     * - Servers should send RFC 1123 dates in GMT.
+     */
+    private fun serverDateFormat(): SimpleDateFormat =
+        SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z", Locale.ENGLISH).apply {
+            timeZone = TimeZone.getTimeZone("GMT")
+        }
+
+    @JvmStatic
+    fun parseServerDateHeader(dateHeader: String): Date? =
+        try {
+            serverDateFormat().parse(dateHeader)
+        } catch (_: ParseException) {
+            null
+        }
+
+    @JvmStatic
+    fun formatServerDateHeader(date: Date): String =
+        serverDateFormat().format(date)
 
     @JsonSerialize(using = FeedingTypeEnum.FeedingTypeEnumSerializer::class)
     @JsonDeserialize(using = FeedingTypeEnum.FeedingTypeEnumDeserializer::class)

@@ -169,4 +169,12 @@ repositories {
     mavenCentral()
 }
 
-kotlin.compilerOptions.freeCompilerArgs.add("-Xannotation-default-target=param-property")
+kotlin {
+    // Android Studio may run Gradle with a newer JDK (e.g. 21). Force Kotlin to target Java 17
+    // to match `android.compileOptions` and avoid JVM target mismatch errors.
+    jvmToolchain(17)
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        freeCompilerArgs.add("-Xannotation-default-target=param-property")
+    }
+}

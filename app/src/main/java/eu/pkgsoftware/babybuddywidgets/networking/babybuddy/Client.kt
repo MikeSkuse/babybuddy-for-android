@@ -55,6 +55,24 @@ class AuthInterceptor(
     }
 }
 
+class CloudflareAccessInterceptor(
+    private val credStore: ServerAccessProviderInterface
+) : Interceptor {
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val originalRequest = chain.request()
+        val builder = originalRequest.newBuilder()
+
+        credStore.cfAccessClientId.trim().takeIf { it.isNotEmpty() }?.also {
+            builder.header("CF-Access-Client-Id", it)
+        }
+        credStore.cfAccessClientSecret.trim().takeIf { it.isNotEmpty() }?.also {
+            builder.header("CF-Access-Client-Secret", it)
+        }
+
+        return chain.proceed(builder.build())
+    }
+}
+
 class DebugNetworkInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
@@ -100,6 +118,7 @@ data class PaginatedResult<T> (
 class Client(val credStore: ServerAccessProviderInterface) {
     val httpClient = OkHttpClient.Builder()
         .addInterceptor(ServerTimeOffsetInterceptor(SystemServerTimeOffsetTracker))
+        .addInterceptor(CloudflareAccessInterceptor(credStore))
         .addInterceptor(AuthInterceptor("Token " + credStore.appToken, credStore.authCookies))
         .addInterceptor(DebugNetworkInterceptor())
         .build()

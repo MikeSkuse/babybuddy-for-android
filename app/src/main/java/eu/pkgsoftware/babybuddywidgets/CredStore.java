@@ -71,6 +71,8 @@ public class CredStore extends CredStoreEncryptionEngine implements ServerAccess
     private String serverUrl;
     private String encryptedToken;
     private String encryptedCookies = null;
+    private String encryptedCfAccessClientId = null;
+    private String encryptedCfAccessClientSecret = null;
     private Map<String, Notes> notesAssignments = new HashMap<String, Notes>();
     private Double lastUsedAmount = null;
     private Map<String, Integer> tutorialParameters = new HashMap<>();
@@ -108,6 +110,8 @@ public class CredStore extends CredStoreEncryptionEngine implements ServerAccess
 
             encryptedToken = props.getProperty("token");
             encryptedCookies = props.getProperty("cookies", null);
+            encryptedCfAccessClientId = props.getProperty("cf_access_client_id", null);
+            encryptedCfAccessClientSecret = props.getProperty("cf_access_client_secret", null);
 
             storedVersion = props.getProperty("stored_version", "-1");
 
@@ -212,6 +216,12 @@ public class CredStore extends CredStoreEncryptionEngine implements ServerAccess
         }
         if (encryptedCookies != null) {
             props.setProperty("cookies", encryptedCookies);
+        }
+        if (encryptedCfAccessClientId != null) {
+            props.setProperty("cf_access_client_id", encryptedCfAccessClientId);
+        }
+        if (encryptedCfAccessClientSecret != null) {
+            props.setProperty("cf_access_client_secret", encryptedCfAccessClientSecret);
         }
 
         props.put("stored_version", storedVersion);
@@ -332,6 +342,42 @@ public class CredStore extends CredStoreEncryptionEngine implements ServerAccess
             encryptedCookies = null;
         } else {
             encryptedCookies = encryptMessage(stringMapToString(cookies));
+        }
+        storePrefs();
+    }
+
+    @Override
+    public @NotNull String getCfAccessClientId() {
+        String result = decryptMessage(encryptedCfAccessClientId);
+        if (result == null) {
+            result = "";
+        }
+        return result;
+    }
+
+    public void storeCfAccessClientId(String clientId) {
+        if ((clientId == null) || clientId.trim().isEmpty()) {
+            encryptedCfAccessClientId = null;
+        } else {
+            encryptedCfAccessClientId = encryptMessage(clientId.trim());
+        }
+        storePrefs();
+    }
+
+    @Override
+    public @NotNull String getCfAccessClientSecret() {
+        String result = decryptMessage(encryptedCfAccessClientSecret);
+        if (result == null) {
+            result = "";
+        }
+        return result;
+    }
+
+    public void storeCfAccessClientSecret(String clientSecret) {
+        if ((clientSecret == null) || clientSecret.trim().isEmpty()) {
+            encryptedCfAccessClientSecret = null;
+        } else {
+            encryptedCfAccessClientSecret = encryptMessage(clientSecret.trim());
         }
         storePrefs();
     }

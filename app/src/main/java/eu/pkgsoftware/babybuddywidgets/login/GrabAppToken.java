@@ -109,9 +109,19 @@ public class GrabAppToken extends StreamReader {
     private HashMap<String, String> cookies;
 
     public GrabAppToken(URL url) {
+        this(url, null, null);
+    }
+
+    public GrabAppToken(URL url, String cfAccessClientId, String cfAccessClientSecret) {
         this.url = url;
         this.headers = new HashMap<String, String>();
         this.headers.put("charset", "utf-8");
+        if ((cfAccessClientId != null) && !cfAccessClientId.trim().isEmpty()) {
+            this.headers.put("CF-Access-Client-Id", cfAccessClientId.trim());
+        }
+        if ((cfAccessClientSecret != null) && !cfAccessClientSecret.trim().isEmpty()) {
+            this.headers.put("CF-Access-Client-Secret", cfAccessClientSecret.trim());
+        }
         this.cookies = new HashMap<String, String>();
     }
 

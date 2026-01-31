@@ -412,15 +412,15 @@ public class BabyBuddyClient extends StreamReader {
             GlobalDebugObject.log("updateServerDateTime(): Date header not found");
             return; // Chicken out, no dateString found, let's hope everything works!
         }
-        try {
-            Date serverTime = Constants.SERVER_DATE_FORMAT.parse(dateString);
-            Date now = new Date(System.currentTimeMillis());
-
-            serverDateOffset = serverTime.getTime() - now.getTime() - 100; // 100 ms offset
-            GlobalDebugObject.log("updateServerDateTime(): Adjusted serverDateOffset to " + serverDateOffset);
-        } catch (ParseException e) {
-            GlobalDebugObject.log("updateServerDateTime(): Date header parse error; " + e);
+        Date serverTime = Constants.parseServerDateHeader(dateString);
+        if (serverTime == null) {
+            GlobalDebugObject.log("updateServerDateTime(): Date header parse error");
+            return;
         }
+        Date now = new Date(System.currentTimeMillis());
+
+        serverDateOffset = serverTime.getTime() - now.getTime() - 100; // 100 ms offset
+        GlobalDebugObject.log("updateServerDateTime(): Adjusted serverDateOffset to " + serverDateOffset);
     }
 
     public URL pathToUrl(String path) throws MalformedURLException {
@@ -441,6 +441,14 @@ public class BabyBuddyClient extends StreamReader {
             qValues.add(entry.getKey(), entry.getValue());
         }
         con.setRequestProperty("Cookie", qValues.toCookiesString());
+
+        // Cloudflare Zero Trust / Access (optional)
+        if (!credStore.getCfAccessClientId().isEmpty()) {
+            con.setRequestProperty("CF-Access-Client-Id", credStore.getCfAccessClientId());
+        }
+        if (!credStore.getCfAccessClientSecret().isEmpty()) {
+            con.setRequestProperty("CF-Access-Client-Secret", credStore.getCfAccessClientSecret());
+        }
 
         con.setDoInput(true);
         return con;
